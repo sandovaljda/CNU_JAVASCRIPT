@@ -90,10 +90,15 @@ var calculadora = {
           display.innerHTML = valorPantalla + teclas;
         }
       } else {
-        if (display.innerHTML == "0"){
+        if (operandos.operadorAnt != "igual" && operandos.operador == "igual"){
           display.innerHTML = teclas;
-        } else {
-          display.innerHTML = valorPantalla + teclas;
+          operandos.operador = "";
+        }else{
+          if (display.innerHTML == "0"){
+              display.innerHTML = teclas;
+            } else {
+              display.innerHTML = valorPantalla + teclas;
+            }
         }
       }
     }
@@ -105,6 +110,7 @@ var calculadora = {
         operandos.operador = "";
         operandos.operadorAnt = "";
         operandos.numAnt = 0;
+        //console.log("on");
         break;
       case "punto":
         var valor = display.innerHTML;
@@ -112,68 +118,77 @@ var calculadora = {
           display.innerHTML = display.innerHTML + ".";
         }
         break;
-        case "sign":
-          var num = Number(display.innerHTML);
-          display.innerHTML = -num;
-          break;
-        case "raiz":
+      case "sign":
+        var num = Number(display.innerHTML);
+        display.innerHTML = -num;
+        break;
+      case "raiz":
 
-          break;
-        case "div":
-          operandos.operador = "div";
-          operandos.numAnt = display.innerHTML;
-          display.innerHTML = "0";
-          break;
-        case "por":
-          operandos.operador = "por";
-          operandos.numAnt = display.innerHTML;
-          display.innerHTML = "0";
-          break;
-        case "menos":
-          operandos.operador = "menos";
-          operandos.numAnt = display.innerHTML;
-          display.innerHTML = "0";
-          break;
-        case "mas":
-          operandos.operador = "mas";
-          operandos.numAnt = display.innerHTML;
-          display.innerHTML = "0";
-          break;
-        case "igual":
-          var num = display.innerHTML;
-          if(operandos.operador != "igual"){
-            operandos.operadorAnt = operandos.operador;
-            operandos.operador = "igual";
+        break;
+      case "igual":
+        var num = display.innerHTML;
+        if(operandos.operador != "igual"){
+          operandos.operadorAnt = operandos.operador;
+          operandos.operador = "igual";
 
-            var mem = operandos.numAnt;
-            operandos.numAnt = num;
-            num = mem;
-          }
-          this.operar(num, operandos.numAnt, operandos.operadorAnt);
-          break;
-        default:
+          var mem = operandos.numAnt;
+          operandos.numAnt = num;
+          num = mem;
+        }
+        this.operar(num, operandos.numAnt, operandos.operadorAnt);
+        break;
+      default:
+        operandos.operador = teclas;
+        operandos.numAnt = display.innerHTML;
+        display.innerHTML = "0";
+    }
+    /*console.log("operandos: " + operandos.operador);
+    console.log("operadorAnt: " + operandos.operadorAnt);
+    console.log("numAnt: " + operandos.numAnt);*/
+  },
+  operar: function(num1, num2, oper){
+    var self = this
+    switch (oper) {
+      case "mas":
+        display.innerHTML = self.valiar8Num(Number(num1) + Number(num2));
+        break;
+      case "menos":
+        display.innerHTML = self.valiar8Num(Number(num1) - Number(num2));
+        break;
+      case "por":
+        display.innerHTML = self.valiar8Num(Number(num1) * Number(num2));
+        break;
+      case "div":
+        display.innerHTML = self.valiar8Num(Number(num1) / Number(num2));
+        break;
+      default:
+      console.log("No se reconoce el operador: " + oper);
+    }
+  },
+  valiar8Num: function (num) {
+    num = num.toFixed(7);
+    //console.log("num: " + num);
+    var self = this
+    var numero = String(num)
+    var numeroT = numero.replace(".","")
+    var NuevoNum = 0;
+    if(numero != numeroT){
+      var numDecimales = String(Number(numeroT)/Number(numero)).length - 1;
+      var comaPos = numero.length - numDecimales;
+      //console.log("Posición de la coma: " + comaPos);
+      if (comaPos <= 9){
+        //console.log("Canditada de digitos valido");
+        NuevoNum = Number(num).toFixed(9 - comaPos);
+        NuevoNum = Number(NuevoNum);
       }
-      console.log("operandos: " + operandos.operador);
-      console.log("operadorAnt: " + operandos.operadorAnt);
-      console.log("numAnt: " + operandos.numAnt);
-    },
-    operar: function(num1, num2, oper){
-      switch (oper) {
-        case "mas":
-          display.innerHTML = Number(num1) + Number(num2);
-          break;
-        case "menos":
-          display.innerHTML = Number(num1) - Number(num2);
-          break;
-        case "por":
-          display.innerHTML = Number(num1) * Number(num2);
-          break;
-        case "div":
-          display.innerHTML = Number(num1) / Number(num2);
-          break;
-        default:
+      else{
+        NuevoNum = "error"
+        //console.log("Resultado es muy grande");
       }
     }
-  }
 
-  calculadora.init();
+    return NuevoNum;
+  }
+}
+
+calculadora.init();
