@@ -1,4 +1,8 @@
 var display = document.getElementById("display");
+var operandos = {
+  operador: "",
+  numAnt: 0
+}
 var calculadora = {
   init: function(){
     var self = this
@@ -64,31 +68,51 @@ var calculadora = {
   presionTecla: function(teclas){
     var self = this;
     //console.log("Se clickeó: " + teclas);
-    self.mostrarpantalla(teclas);
-  },
-  mostrarpantalla: function(teclas){
     if(teclas == "0" || teclas == "1" || teclas == "2" || teclas == "3" ||
      teclas == "4" || teclas == "5" || teclas == "6" || teclas == "7" ||
      teclas == "8" || teclas == "9"){
       console.log("Número a mostrar en pantalla: " + teclas);
-      var valorPantalla = display.innerHTML;
-      if(valorPantalla.length <= 8){
-        if (teclas == "0"){
-          if(display.innerHTML == "0"){
-            display.innerHTML = "0";
-          } else {
-            display.innerHTML = valorPantalla + teclas;
-          }
-        } else {
-          if (display.innerHTML == "0"){
-            display.innerHTML = teclas;
-          } else {
-            display.innerHTML = valorPantalla + teclas;
-          }
-        }
-      }
+      self.mostrarpantalla(teclas);
     }else{
       console.log("Tecla presionada: " + teclas);
+      self.operador(teclas);
+    }
+  },
+  mostrarpantalla: function(teclas){
+    var valorPantalla = display.innerHTML;
+    var cantidadNumeros = valorPantalla.replace(".","").length;
+    if(cantidadNumeros < 8){
+      if (teclas == "0"){
+        if(display.innerHTML == "0"){
+          display.innerHTML = "0";
+        } else {
+          display.innerHTML = valorPantalla + teclas;
+        }
+      } else {
+        if (display.innerHTML == "0"){
+          display.innerHTML = teclas;
+        } else {
+          display.innerHTML = valorPantalla + teclas;
+        }
+      }
+    }
+  },
+  operador: function(teclas){
+    switch(teclas){
+      case "on":
+        display.innerHTML = "0";
+        break;
+      case "punto":
+        var valor = display.innerHTML;
+        if(valor == valor.replace(".","")){
+          display.innerHTML = display.innerHTML + ".";
+        }
+        break;
+      case "sign":
+        var num = Number(display.innerHTML);
+        display.innerHTML = -num;
+        break;
+      default:
     }
   }
 }
