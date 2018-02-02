@@ -1,6 +1,7 @@
 var display = document.getElementById("display");
 var operandos = {
   operador: "",
+  operadorAnt: "",
   numAnt: 0
 }
 var calculadora = {
@@ -71,10 +72,10 @@ var calculadora = {
     if(teclas == "0" || teclas == "1" || teclas == "2" || teclas == "3" ||
      teclas == "4" || teclas == "5" || teclas == "6" || teclas == "7" ||
      teclas == "8" || teclas == "9"){
-      console.log("Número a mostrar en pantalla: " + teclas);
+      //console.log("Número a mostrar en pantalla: " + teclas);
       self.mostrarpantalla(teclas);
     }else{
-      console.log("Tecla presionada: " + teclas);
+      //console.log("Tecla presionada: " + teclas);
       self.operador(teclas);
     }
   },
@@ -101,6 +102,9 @@ var calculadora = {
     switch(teclas){
       case "on":
         display.innerHTML = "0";
+        operandos.operador = "";
+        operandos.operadorAnt = "";
+        operandos.numAnt = 0;
         break;
       case "punto":
         var valor = display.innerHTML;
@@ -108,13 +112,68 @@ var calculadora = {
           display.innerHTML = display.innerHTML + ".";
         }
         break;
-      case "sign":
-        var num = Number(display.innerHTML);
-        display.innerHTML = -num;
-        break;
-      default:
+        case "sign":
+          var num = Number(display.innerHTML);
+          display.innerHTML = -num;
+          break;
+        case "raiz":
+
+          break;
+        case "div":
+          operandos.operador = "div";
+          operandos.numAnt = display.innerHTML;
+          display.innerHTML = "0";
+          break;
+        case "por":
+          operandos.operador = "por";
+          operandos.numAnt = display.innerHTML;
+          display.innerHTML = "0";
+          break;
+        case "menos":
+          operandos.operador = "menos";
+          operandos.numAnt = display.innerHTML;
+          display.innerHTML = "0";
+          break;
+        case "mas":
+          operandos.operador = "mas";
+          operandos.numAnt = display.innerHTML;
+          display.innerHTML = "0";
+          break;
+        case "igual":
+          var num = display.innerHTML;
+          if(operandos.operador != "igual"){
+            operandos.operadorAnt = operandos.operador;
+            operandos.operador = "igual";
+
+            var mem = operandos.numAnt;
+            operandos.numAnt = num;
+            num = mem;
+          }
+          this.operar(num, operandos.numAnt, operandos.operadorAnt);
+          break;
+        default:
+      }
+      console.log("operandos: " + operandos.operador);
+      console.log("operadorAnt: " + operandos.operadorAnt);
+      console.log("numAnt: " + operandos.numAnt);
+    },
+    operar: function(num1, num2, oper){
+      switch (oper) {
+        case "mas":
+          display.innerHTML = Number(num1) + Number(num2);
+          break;
+        case "menos":
+          display.innerHTML = Number(num1) - Number(num2);
+          break;
+        case "por":
+          display.innerHTML = Number(num1) * Number(num2);
+          break;
+        case "div":
+          display.innerHTML = Number(num1) / Number(num2);
+          break;
+        default:
+      }
     }
   }
-}
 
-calculadora.init();
+  calculadora.init();
